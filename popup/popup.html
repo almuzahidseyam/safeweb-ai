@@ -1,0 +1,67 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>SafeWeb AI</title>
+    <link href="tailwind.min.css" rel="stylesheet">
+    <link href="popup.css" rel="stylesheet">
+</head>
+<body class="w-80 bg-slate-50 text-slate-800 p-5 font-sans m-0 antialiased" style="background-color: #f8fafc;">
+    
+    <!-- Header -->
+    <div class="flex items-center gap-3 mb-6">
+        <div class="w-12 h-12 bg-indigo-600 rounded-2xl flex items-center justify-center shadow-lg shadow-indigo-200">
+            <span class="text-white text-2xl">🛡️</span>
+        </div>
+        <div>
+            <h1 class="text-2xl font-extrabold bg-clip-text text-transparent bg-gradient-to-r from-indigo-600 to-purple-600 tracking-tight" style="background-image: linear-gradient(to right, #4f46e5, #9333ea); -webkit-background-clip: text; color: transparent;">SafeWeb AI</h1>
+            <p class="text-xs text-gray-500 font-semibold tracking-wider uppercase mt-0.5">Web Security</p>
+        </div>
+    </div>
+
+    <!-- Modules -->
+    <div class="space-y-3">
+        
+        <!-- Privacy Module -->
+        <div class="bg-white p-4 rounded-2xl shadow-sm border border-gray-100 flex items-center justify-between transition-all hover:shadow-md">
+            <div>
+                <h2 class="text-sm font-bold text-gray-800 flex items-center gap-1.5">
+                    <span class="text-lg">🖼️</span> Image Privacy
+                </h2>
+                <p class="text-xs text-gray-400 mt-1 font-medium">Auto-blur NSFW images</p>
+            </div>
+            
+            <!-- Custom CSS Toggle -->
+            <label class="switch">
+                <input type="checkbox" id="toggle-privacy" checked>
+                <span class="slider round"></span>
+            </label>
+        </div>
+
+        <!-- Phishing Module -->
+        <div class="bg-white p-4 rounded-2xl shadow-sm border border-gray-100 flex items-center justify-between transition-all hover:shadow-md">
+            <div>
+                <h2 class="text-sm font-bold text-gray-800 flex items-center gap-1.5">
+                    <span class="text-lg">🎣</span> Anti-Phishing
+                </h2>
+                <p class="text-xs text-gray-400 mt-1 font-medium">Block malicious URLs</p>
+            </div>
+            
+            <!-- Custom CSS Toggle -->
+            <label class="switch">
+                <input type="checkbox" id="toggle-phishing" checked>
+                <span class="slider round"></span>
+            </label>
+        </div>
+        
+    </div>
+
+    <!-- Action Button -->
+    <button id="scan-now" class="mt-6 w-full bg-gray-900 hover:bg-indigo-600 text-white text-sm font-bold py-3.5 px-4 rounded-xl transition-colors duration-300 flex items-center justify-center gap-2 shadow-lg hover:shadow-indigo-200 focus:outline-none">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+        Force Deep Scan
+    </button>
+    
+    <script src="popup.js"></script>
+</body>
+</html>
