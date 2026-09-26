@@ -31,3 +31,6 @@ An **All-in-One AI-powered Web Security & Privacy Extension** that runs entirely
 
 ---
 *Developed as an advanced experimental cybersecurity tool.*
+
+## 📝 License
+This project is open-source and licensed under the **MIT License**. Copyright (c) 2026 Muhammad Al-Muzahid.
