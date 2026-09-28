@@ -1,0 +1,36 @@
+name: Build and Release Chrome Extension
+
+on:
+  push:
+    tags:
+      - 'v*'
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+    - name: Get version from manifest or tag
+      id: get_version
+      run: |
+        if [[ $GITHUB_REF == refs/tags/* ]]; then
+          VERSION=${GITHUB_REF#refs/tags/}
+        else
+          VERSION="manual-$(date +%s)"
+        fi
+        echo "VERSION=$VERSION" >> $GITHUB_ENV
+    - name: Zip Extension
+      run: zip -r SafeWebAI-${{ env.VERSION }}.zip . -x ".git/*" -x ".github/*"
+    - name: Upload Artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: SafeWebAI-Extension
+        path: SafeWebAI-${{ env.VERSION }}.zip
+    - name: Create GitHub Release
+      if: startsWith(github.ref, 'refs/tags/')
+      uses: softprops/action-gh-release@v2
+      with:
+        files: SafeWebAI-${{ env.VERSION }}.zip
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
