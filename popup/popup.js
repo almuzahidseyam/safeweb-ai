@@ -1,38 +1,23 @@
-﻿document.addEventListener('DOMContentLoaded', () => {
-    const privacyToggle = document.getElementById('toggle-privacy');
-    const phishingToggle = document.getElementById('toggle-phishing');
-
-    // Load initial state
-    chrome.storage.local.get(['privacyEnabled', 'phishingEnabled'], (result) => {
-        privacyToggle.checked = result.privacyEnabled !== undefined ? result.privacyEnabled : true;
-        phishingToggle.checked = result.phishingEnabled !== undefined ? result.phishingEnabled : true;
-    });
-
-    // Save state on toggle
-    privacyToggle.addEventListener('change', (e) => {
-        chrome.storage.local.set({ privacyEnabled: e.target.checked });
-    });
-    
-    phishingToggle.addEventListener('change', (e) => {
-        chrome.storage.local.set({ phishingEnabled: e.target.checked });
-    });
-
-    // Manual scan button (Fixed Context Isolation Bug)
-    document.getElementById('scan-now').addEventListener('click', () => {
-        chrome.tabs.query({active: true, currentWindow: true}, (tabs) => {
-            if (tabs[0]) {
-                chrome.tabs.sendMessage(tabs[0].id, { action: "forceScan" }, (response) => {
-                    if (chrome.runtime.lastError) {
-                        alert("Please refresh the page first. SafeWeb AI needs to inject its scripts.");
-                    } else {
-                        // Just change button text temporarily to show feedback
-                        const btn = document.getElementById('scan-now');
-                        const originalText = btn.innerHTML;
-                        btn.innerHTML = '✅ Scanning...';
-                        setTimeout(() => { btn.innerHTML = originalText; }, 2000);
-                    }
-                });
-            }
-        });
-    });
-});
+const privacy = document.getElementById('toggle-privacy');
+const phishing = document.getElementById('toggle-phishing');
+const status = document.getElementById('status');
+const scan = document.getElementById('scan-now');
+let tabId;
+const settings = await chrome.storage.local.get(['privacyEnabled', 'phishingEnabled']);
+privacy.checked = settings.privacyEnabled !== false; phishing.checked = settings.phishingEnabled !== false;
+privacy.onchange = () => chrome.storage.local.set({ privacyEnabled: privacy.checked });
+phishing.onchange = () => chrome.storage.local.set({ phishingEnabled: phishing.checked });
+async function refresh(action = 'getStatus') {
+    try {
+        if (!tabId) throw new Error('No tab');
+        const result = await chrome.tabs.sendMessage(tabId, { action });
+        scan.disabled = !result.enabled || result.model === 'loading';
+        if (!result.enabled) status.textContent = 'Image blur is off.';
+        else if (result.model === 'loading') status.textContent = 'Loading the local image model…';
+        else if (result.model !== 'ready') status.textContent = 'Image model unavailable. Try scanning again or reload the page.';
+        else status.textContent = `${result.scanned} scans completed · ${result.blurred} images blurred · ${result.failed} scans unavailable${result.pending ? ' · scanning…' : ''}`;
+    } catch { status.textContent = 'Unavailable on this page. Open a regular web page, or reload an existing tab after installation.'; scan.disabled = true; }
+}
+const [tab] = await chrome.tabs.query({ active: true, currentWindow: true }); tabId = tab?.id;
+scan.onclick = () => refresh('forceScan');
+await refresh(); setInterval(refresh, 1000);
